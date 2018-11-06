@@ -66,10 +66,10 @@ if [ -z "$DBPASS" ]; then
   exit 1
 fi
 
-if [ -z "$RSPAMD_PASSWORD" ]; then
-  echo "[ERROR] Rspamd password must be set !"
-  exit 1
-fi
+#if [ -z "$RSPAMD_PASSWORD" ]; then
+#  echo "[ERROR] Rspamd password must be set !"
+#  exit 1
+#fi
 
 if [ -z "$FQDN" ]; then
   echo "[ERROR] The fully qualified domain name must be set !"
@@ -657,7 +657,7 @@ fi
 
 # RSPAMD
 # ---------------------------------------------------------------------------------------------
-
+if [ ! -z "${RSPAMD_PASSWORD}" ]; then
 # Add a rspamd user with DBDIR as home
 # https://github.com/hardware/debian-mail-overlay
 adduser --quiet \
@@ -720,7 +720,7 @@ whitelist {
 EOF
 
 fi
-
+fi
 # CLAMD
 # ---------------------------------------------------------------------------------------------
 

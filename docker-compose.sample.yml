@@ -5,7 +5,7 @@ version: "3"
 
 # IPv4/IPv6 network
 # docker network create http_network --ipv6 --subnet "fd00:0000:0000:0000::/64"
-# Refer to https://github.com/hardware/mailserver/#ipv6-support for more information.
+# Refer to https://github.com/agiletool/smtp#ipv6-support for more information.
 
 networks:
   http_network:
