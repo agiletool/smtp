@@ -1,3 +1,0 @@
-root         postmaster@{{ .DOMAIN }}
-clamav       postmaster@{{ .DOMAIN }}
-postmaster   postmaster@{{ .DOMAIN }}
