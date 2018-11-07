@@ -337,7 +337,7 @@ if [ $? -ne 0 ]; then
   else
     echo "[ERROR] Container IP not found with embedded DNS server... Abort !"
     echo "[ERROR] Check your REDIS_HOST environment variable"
-    exit 1
+    #exit 1
   fi
 else
   echo "[INFO] Redis hostname found in /etc/hosts"

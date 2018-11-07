@@ -7,6 +7,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y -q --no-install-recommends \
     postfix postfix-pgsql postfix-mysql postfix-pcre libsasl2-modules \
+	fetchmail libdbi-perl libdbd-pg-perl libdbd-mysql-perl liblockfile-simple-perl \
     python-setuptools python-gpgme \
     rsyslog dnsutils curl unbound jq rsync \
  && rm -rf /var/spool/postfix \
