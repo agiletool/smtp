@@ -26,6 +26,14 @@ EOF
 cat >> /opt/postfix.sh <<EOF
 #!/bin/bash
 service postfix start
+
+# add relay_domains to null
+if [ `grep -e "relay_domains\s*=\s*" /etc/postfix/main.cf` ]; then
+	sed -ie 's/relay_domains\s*=\s*.*$/relay_domains=/' /etc/postfix/main.cf
+else
+	echo "relay_domains=" >> /etc/postfix/main.cf
+fi
+service postfix force-reload
 tail -f /var/log/mail.log
 EOF
 chmod +x /opt/postfix.sh
@@ -91,12 +99,6 @@ if [ ! -z "$mynetworks" ]; then
 	postconf -e mynetworks=$mynetworks
 fi
 
-# add relay_domains to null
-if [ `grep -e "relay_domains\s*=\s*" /etc/postfix/main.cf` ]; then
-	sed -ie 's/relay_domains\s*=\s*.*$/relay_domains=/' /etc/postfix/main.cf
-else
-	echo "relay_domains=" >> /etc/postfix/main.cf
-fi
 
 # /etc/postfix/main.cf
 postconf -e milter_protocol=2
@@ -146,3 +148,4 @@ cat >> /etc/opendkim/SigningTable <<EOF
 EOF
 chown opendkim:opendkim $(find /etc/opendkim/domainkeys -iname *.private)
 chmod 400 $(find /etc/opendkim/domainkeys -iname *.private)
+
