@@ -1,0 +1,32 @@
+version: "3"
+
+networks:
+  mail_network:
+    external: true
+  docker-data_default:
+    external: true
+    
+services:
+
+  mailserver:
+    image: agiletool/postfix
+    container_name: mailserver
+    restart: unless-stopped
+    domainname: mail.mozzuu.store                    # Mail server A/MX/FQDN & reverse PTR = mail.domain.tld.
+    hostname: mail
+    ports:
+      - "25:25"       # SMTP                - Required
+      - "465:465"     # SMTPS      SSL/TLS  - Optional - Enabled for compatibility reason, otherwise disabled
+      - "587:587"     # Submission STARTTLS - Optional - For webmails/desktop clients
+    environment:
+      - maildomain=mail.mozzuu.store
+      - smtp_user=mozzuu.store:mozzuustore           # Set multiple user credentials: -e smtp_user=user1:pwd1,user2:pwd2,...,userN:pwdN
+      - auth_enable=no
+	  - mynetworks=127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 172.26.0.0/16
+      
+    volumes:
+      - /home/ubuntu/docker-smtp/domainkeys:/etc/opendkim/domainkeys    # Enable OpenDKIM: save your domain key .private in /path/to/domainkeys
+      - /home/ubuntu/docker-smtp/certs:/etc/postfix/certs               # Enable TLS(587): save your SSL certificates .key and .crt to /path/to/certs
+    networks:
+      - mail_network
+      - docker-data_default

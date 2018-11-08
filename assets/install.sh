@@ -5,6 +5,9 @@ if [[ -a /etc/supervisor/conf.d/supervisord.conf ]]; then
   exit 0
 fi
 
+#default values
+if [ -z "$auth_enable" ]; then auth_enable="no"; fi
+
 #supervisor
 cat > /etc/supervisor/conf.d/supervisord.conf <<EOF
 [supervisord]
@@ -35,9 +38,11 @@ postconf -F '*/*/chroot = n'
 # Cyrus-SASL support for authentication of mail clients.
 ############
 # /etc/postfix/main.cf
-postconf -e smtpd_sasl_auth_enable=yes
-postconf -e broken_sasl_auth_clients=yes
-postconf -e smtpd_recipient_restrictions=permit_sasl_authenticated,reject_unauth_destination
+postconf -e smtpd_sasl_auth_enable=$auth_enable
+postconf -e broken_sasl_auth_clients=$auth_enable
+if [ "$auth_enable" == "yes" ]; then
+	postconf -e smtpd_recipient_restrictions=permit_sasl_authenticated,reject_unauth_destination
+fi
 # smtpd.conf
 cat >> /etc/postfix/sasl/smtpd.conf <<EOF
 pwcheck_method: auxprop
@@ -63,7 +68,7 @@ if [[ -n "$(find /etc/postfix/certs -iname *.crt)" && -n "$(find /etc/postfix/ce
   postconf -M submission/inet="submission   inet   n   -   n   -   -   smtpd"
   postconf -P "submission/inet/syslog_name=postfix/submission"
   postconf -P "submission/inet/smtpd_tls_security_level=encrypt"
-  postconf -P "submission/inet/smtpd_sasl_auth_enable=yes"
+  postconf -P "submission/inet/smtpd_sasl_auth_enable=$auth_enable"
   postconf -P "submission/inet/milter_macro_daemon_name=ORIGINATING"
   postconf -P "submission/inet/smtpd_recipient_restrictions=permit_sasl_authenticated,reject_unauth_destination"
 fi
@@ -80,7 +85,14 @@ cat >> /etc/supervisor/conf.d/supervisord.conf <<EOF
 [program:opendkim]
 command=/usr/sbin/opendkim -f
 EOF
+
+# add mynetworks
+if [ ! -z "$mynetworks" ]; then
+	postconf -e mynetworks=$mynetworks
+fi
+
 # /etc/postfix/main.cf
+postconf -e relay_domains=
 postconf -e milter_protocol=2
 postconf -e milter_default_action=accept
 postconf -e smtpd_milters=inet:localhost:12301
