@@ -1,5 +1,9 @@
 #!/bin/bash
 
+set -v
+
+export MY_NETWORKS
+
 #judgement
 if [[ -a /etc/supervisor/conf.d/supervisord.conf ]]; then
   exit 0
@@ -39,6 +43,13 @@ EOF
 chmod +x /opt/postfix.sh
 postconf -e myhostname=$maildomain
 postconf -F '*/*/chroot = n'
+# add mynetworks
+if [ ! -z "$MY_NETWORKS" ]; then
+	echo "MY_NETWORKS $MY_NETWORKS"
+	postconf -e mynetworks="$MY_NETWORKS"
+else
+	echo "MY_NETWORKS empty"
+fi
 
 ############
 # SASL SUPPORT FOR CLIENTS
@@ -93,13 +104,6 @@ cat >> /etc/supervisor/conf.d/supervisord.conf <<EOF
 [program:opendkim]
 command=/usr/sbin/opendkim -f
 EOF
-
-# add mynetworks
-if [ ! -z "$mynetworks" ]; then
-	postconf -e mynetworks=$mynetworks
-fi
-
-
 # /etc/postfix/main.cf
 postconf -e milter_protocol=2
 postconf -e milter_default_action=accept
@@ -148,4 +152,3 @@ cat >> /etc/opendkim/SigningTable <<EOF
 EOF
 chown opendkim:opendkim $(find /etc/opendkim/domainkeys -iname *.private)
 chmod 400 $(find /etc/opendkim/domainkeys -iname *.private)
-
