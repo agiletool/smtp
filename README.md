@@ -25,6 +25,12 @@ TLS and OpenDKIM support are optional.
 	```
 2. Enable OpenDKIM: save your domain key ```.private``` in ```/path/to/domainkeys```
 
+	Create private key:
+	```bash
+	$ sudo docker exec -i postfix opendkim-genkey -s mail -d mozzuu.store
+	$ sudo docker cp postfix:/mail.private /path/to/domainkeys/mail.private
+	```
+
 	```bash
 	$ sudo docker run -p 25:25 \
 			-e maildomain=mail.example.com -e smtp_user=user:pwd \
