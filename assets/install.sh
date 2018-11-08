@@ -11,6 +11,7 @@ fi
 
 #default values
 if [ -z "$auth_enable" ]; then auth_enable="no"; fi
+if [ -z "$IPV4_ONLY" ]; then IPV4_ONLY="no"; fi
 
 #supervisor
 cat > /etc/supervisor/conf.d/supervisord.conf <<EOF
@@ -49,6 +50,11 @@ if [ ! -z "$MY_NETWORKS" ]; then
 	postconf -e mynetworks="$MY_NETWORKS"
 else
 	echo "MY_NETWORKS empty"
+fi
+# set inet_protocols to IPv4
+if [ "$IPV4_ONLY" == "yes" ]; then
+	echo "set inet_protocols IPv4"
+	postconf -e inet_protocols="ipv4"
 fi
 
 ############

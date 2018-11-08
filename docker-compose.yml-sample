@@ -22,11 +22,17 @@ services:
       - maildomain=mail.mozzuu.store
       - smtp_user=mozzuu.store:mozzuustore           # Set multiple user credentials: -e smtp_user=user1:pwd1,user2:pwd2,...,userN:pwdN
       - auth_enable=no
-      - mynetworks=127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 172.26.0.0/16
-      
+      - MY_NETWORKS=127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 172.26.0.0/16
+	  - IPV4_ONLY=yes
+
     volumes:
       - /home/ubuntu/docker-smtp/domainkeys:/etc/opendkim/domainkeys    # Enable OpenDKIM: save your domain key .private in /path/to/domainkeys
       - /home/ubuntu/docker-smtp/certs:/etc/postfix/certs               # Enable TLS(587): save your SSL certificates .key and .crt to /path/to/certs
     networks:
       - mail_network
       - docker-data_default
+	  
+# Test non TLS:  
+# sendemail -s 172.26.0.2 -f no-reply@mozzuu.store -t trungthin.luong@trueplus.vn -u Hello -m "Hello a"
+# Test with TLS:
+# sendEmail -f no-reply@mozzuu.store -t trungthin.luong@trueplus.vn -u "This is my subject"  -m "Body of my message" -s 127.0.0.1 -o tls=yes -xu mozzuu.store -xp mozzuustore
