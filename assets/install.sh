@@ -92,7 +92,7 @@ if [ ! -z "$mynetworks" ]; then
 fi
 
 # /etc/postfix/main.cf
-postconf -e relay_domains=
+postconf -e relay_domains=" "
 postconf -e milter_protocol=2
 postconf -e milter_default_action=accept
 postconf -e smtpd_milters=inet:localhost:12301
