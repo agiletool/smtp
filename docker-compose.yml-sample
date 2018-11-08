@@ -22,7 +22,7 @@ services:
       - maildomain=mail.mozzuu.store
       - smtp_user=mozzuu.store:mozzuustore           # Set multiple user credentials: -e smtp_user=user1:pwd1,user2:pwd2,...,userN:pwdN
       - auth_enable=no
-	  - mynetworks=127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 172.26.0.0/16
+      - mynetworks=127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 172.26.0.0/16
       
     volumes:
       - /home/ubuntu/docker-smtp/domainkeys:/etc/opendkim/domainkeys    # Enable OpenDKIM: save your domain key .private in /path/to/domainkeys
