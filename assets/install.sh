@@ -91,8 +91,14 @@ if [ ! -z "$mynetworks" ]; then
 	postconf -e mynetworks=$mynetworks
 fi
 
+# add relay_domains to null
+if [ `grep -e "relay_domains\s*=\s*" /etc/postfix/main.cf` ]; then
+	sed -ie 's/relay_domains\s*=\s*.*$/relay_domains=/' /etc/postfix/main.cf
+else
+	echo "relay_domains=" >> /etc/postfix/main.cf
+fi
+
 # /etc/postfix/main.cf
-postconf -e relay_domains=" "
 postconf -e milter_protocol=2
 postconf -e milter_default_action=accept
 postconf -e smtpd_milters=inet:localhost:12301
