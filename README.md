@@ -31,6 +31,26 @@ TLS and OpenDKIM support are optional.
 			-v /path/to/domainkeys:/etc/opendkim/domainkeys \
 			--name postfix -d catatnight/postfix
 	```
+
+	Create private key:
+	```bash
+	$ sudo docker exec -i postfix opendkim-genkey -s mail -d mozzuu.store
+	$ sudo docker cp postfix:/mail.private /path/to/domainkeys/mail.private
+	```
+	Add public key to DNS
+	```bash
+	$ sudo docker exec -i postfix cat mail.txt
+	```
+	```
+	mail._domainkey IN      TXT     ( "v=DKIM1; k=rsa; "  "p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDk/yE9oKlsnrq2/m9XaydqmDUGQNLoOls6+Tf3Hz3nglBQ42IldJxhN4eBMk2qUJRUNjjAxUshR/hSZ1pXMBWRtI9iP2mJy4kEarbgZrxr0w3NYDNddxi6IAIw0VnjI6TKpxhTYVVhwfLm2MubmPYEB+qFVI7q2JWMPVO1uEXN6QIDAQAB" )  ; ----- DKIM key mail for mozzuu.store
+	```
+	Copy that key and add a TXT record to your domain's DNS entries:
+	```
+	Name: mail._domainkey.mozzuu.store.
+	Text: "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDk/yE9oKlsnrq2/m9XaydqmDUGQNLoOls6+Tf3Hz3nglBQ42IldJxhN4eBMk2qUJRUNjjAxUshR/hSZ1pXMBWRtI9iP2mJy4kEarbgZrxr0w3NYDNddxi6IAIw0VnjI6TKpxhTYVVhwfLm2MubmPYEB+qFVI7q2JWMPVO1uEXN6QIDAQAB"
+	```
+
+	
 3. Enable TLS(587): save your SSL certificates ```.key``` and ```.crt``` to  ```/path/to/certs```
 
 	```bash
